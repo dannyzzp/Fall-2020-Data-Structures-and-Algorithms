@@ -1,0 +1,67 @@
+#include <iostream>
+
+using namespace std;
+int a[10];
+int i=0;
+int *stack();
+void push(int val);
+void pop();
+
+void dumpStack(){
+    int j;
+    cout<<"dumpStack:"<<endl;
+    for(j=0;j<i;j++){
+        cout<<a[j]<<endl;
+    }
+}
+
+int main()
+{
+    
+    int *arr=stack();
+    int j;
+    
+    return 0;
+}
+
+int *stack(){
+    push(2);
+    push(1);
+    dumpStack();
+    push(3);
+    push(10);
+    pop();
+    push(15);
+    dumpStack();
+    pop();
+    pop();
+    dumpStack();
+    pop();
+    pop();
+    pop();
+    dumpStack();
+   
+    return a;
+}
+
+void push(int val){
+    if(i<=9){    
+        a[i]=val;
+        i++;
+    }
+    else{
+        cout<<"out of range"<<endl;
+    }
+    
+}
+
+void pop(){
+    if(i>=0){
+        i--;
+        a[i]=0;
+        
+    }
+    else{
+        cout<<"null"<<endl;
+    }
+}
