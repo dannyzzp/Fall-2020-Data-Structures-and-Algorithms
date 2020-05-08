@@ -161,9 +161,8 @@ int main()
         }
         for(int i=0;i<31;i++){
             for(int j=0;j<31;j++){
-                temp[i][j]=pre[i][j];
-                pre[i][j]=cur[i][j];
-                cur[i][j]=temp[i][j];
+                pre[i][j]=cur[i][j];//Here is the modified part
+                cur[i][j]=0;
             }
             cout<<endl;
         }
@@ -173,5 +172,3 @@ int main()
  
     return 0;
 }
-
-
