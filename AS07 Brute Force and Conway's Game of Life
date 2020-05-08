@@ -1,0 +1,398 @@
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <cstdlib>
+using namespace std;
+
+int pre[32][32]={0};
+int cur[32][32]={0};//0=dead, 1=live
+char input[8][2];
+char hexMatrix[32][8];
+int starting[32][32]={0};
+
+
+void printUserFriendly(){//only printing pre now
+    cout<<"User-friendly format:"<<endl;
+    //cout<<"Previous Binary Matrix:"<<endl;
+    for(int i=0;i<32;i++){
+        for(int j=0;j<32;j++){
+            if(pre[i][j]==0){
+                cout<<'.';
+            }
+            else{
+                cout<<'*';
+            }
+        }
+        cout<<endl;
+    }
+    /*cout<<"Current Binary Matrix:"<<endl;
+    for(int i=0;i<32;i++){
+        for(int j=0;j<32;j++){
+            if(cur[i][j]==0){
+                cout<<'.';
+            }
+            else{
+                cout<<'*';
+            }
+        }
+        cout<<endl;
+    }*/
+}
+void printCompact(){
+    cout<<"Compact format:"<<endl;
+    for(int i=0;i<32;i++){
+        for(int j=0;j<8;j++){
+            cout<<hexMatrix[i][j];
+        }
+        cout<<endl;
+    }
+}
+
+int fitness(){
+    int counter=0;
+    for(int i=0;i<32;i++){
+        for(int j=0;j<32;j++){
+            if(pre[i][j]==1){
+                counter++;
+            }
+        }
+    }
+    
+    return counter;
+}
+
+void start(){
+    int start1,start2;
+    while(true){
+        cout<<"input a point with x and y coordinates as starting pattern, input '-1' to stop"<<endl;
+        cin>>start1;
+        if(start1==-1){
+            break;
+        }
+        cin>>start2;
+        while(start1<=0||start1>=31||start2<=0||start2>=31){
+            cout<<"dead border method!!"<<endl;
+            cin>>start1>>start2;
+        }
+        pre[start1][start2]=1;
+    }
+}
+
+void conways(){
+    
+    for(int i=1;i<30;i++){
+        for(int j=1;j<30;j++){
+            int counter=pre[i-1][j-1]+pre[i-1][j]+pre[i-1][j+1]+
+            pre[i][j-1]+pre[i][j+1]+pre[i+1][j-1]+pre[i+1][j]+pre[i+1][j+1];
+            if(pre[i][j]==0){
+                if(counter==3){
+                    cur[i][j]=1;
+                }
+                else{
+                    cur[i][j]=0;
+                }
+            }
+            else{
+                if(counter==2||counter==3){
+                    cur[i][j]=1;
+                }
+                else{
+                    cur[i][j]=0;
+                }
+            }
+        }
+    }
+}
+
+void binaryToHex(){
+    for(int k=0;k<1;k++){
+        for(int i=0;i<32;i++){
+            for(int j=0;j<32;j++){
+                if(j%4==0){
+                    int hex=pre[i][j]*2*2*2;
+                    hex+=pre[i][j+1]*2*2;
+                    hex+=pre[i][j+2]*2;
+                    hex+=pre[i][j+3]*1;
+                    if(hex==10){
+                        hexMatrix[i][j/4]='A';
+                    }
+                    else if(hex==11){
+                        hexMatrix[i][j/4]='B';
+                    }
+                    else if(hex==12){
+                        hexMatrix[i][j/4]='C';
+                    }
+                    else if(hex==13){
+                        hexMatrix[i][j/4]='D';
+                    }
+                    else if(hex==14){
+                        hexMatrix[i][j/4]='E';
+                    }
+                    else if(hex==15){
+                        hexMatrix[i][j/4]='F';
+                    }
+                    else{
+                        hexMatrix[i][j/4]=hex+48;//problem here, check askii table
+                    }
+                }
+            }
+        }
+    }
+}
+
+int bruteForce(){
+    int best=0;
+    for(int i=0;i<1000;i++){
+            conways();
+           // binaryToHex();
+            best=fitness();
+            
+            for(int i=0;i<32;i++){
+                for(int j=0;j<32;j++){
+                    pre[i][j]=cur[i][j];
+                    cur[i][j]=0;
+                }
+            }
+        }
+    return best;
+}
+
+void hexInput(){
+    int i,j;
+    for(i=0;i<8;i++){
+        for(j=0;j<2;j++){
+            cin>>input[i][j];
+        }
+    }
+    
+    for(i=12;i<=19;i++){//row 16,17,col 16,17
+        for(j=3;j<=4;j++){
+            hexMatrix[i][j]=input[i-12][j-3];
+        }
+    }
+    
+}
+
+void hexToBinary(){//convert the entered format to pre[][] in binary, somethings wrong here
+    for(int i=0;i<32;i++){
+        for(int j=0;j<8;j++){
+            if(hexMatrix[i][j]=='0'){
+                pre[i][4*j]=0;
+                pre[i][4*j+1]=0;
+                pre[i][4*j+2]=0;
+                pre[i][4*j+3]=0;
+            }
+            else if(hexMatrix[i][j]=='1'){
+                pre[i][4*j+3]=1;
+                pre[i][4*j+1]=0;
+                pre[i][4*j+2]=0;
+                pre[i][4*j]=0;
+            }
+            else if(hexMatrix[i][j]=='2'){
+                pre[i][4*j]=0;
+                pre[i][4*j+2]=1;
+                pre[i][4*j+1]=0;
+                pre[i][4*j+3]=0;
+            }
+            else if(hexMatrix[i][j]=='3'){
+                pre[i][4*j+3]=1;
+                pre[i][4*j+2]=1;
+                pre[i][4*j+1]=0;
+                pre[i][4*j]=0;
+            }
+            else if(hexMatrix[i][j]=='4'){
+                pre[i][4*j+3]=0;
+                pre[i][4*j+2]=0;
+                pre[i][4*j+1]=1;
+                pre[i][4*j]=0;
+            }
+            else if(hexMatrix[i][j]=='5'){
+                pre[i][4*j+3]=1;
+                pre[i][4*j+2]=0;
+                pre[i][4*j+1]=1;
+                pre[i][4*j]=0;
+            }
+            else if(hexMatrix[i][j]=='6'){
+                pre[i][4*j+3]=0;
+                pre[i][4*j+2]=1;
+                pre[i][4*j+1]=1;
+                pre[i][4*j]=0;
+            }
+            else if(hexMatrix[i][j]=='7'){
+                pre[i][4*j+3]=1;
+                pre[i][4*j+2]=1;
+                pre[i][4*j+1]=1;
+                pre[i][4*j]=0;
+            }
+            else if(hexMatrix[i][j]=='8'){
+                pre[i][4*j+3]=0;
+                pre[i][4*j+2]=0;
+                pre[i][4*j+1]=0;
+                pre[i][4*j]=1;
+            }
+            else if(hexMatrix[i][j]=='9'){
+                pre[i][4*j+3]=1;
+                pre[i][4*j+2]=0;
+                pre[i][4*j+1]=0;
+                pre[i][4*j]=1;
+            }
+            else if(hexMatrix[i][j]=='A'){
+                pre[i][4*j+3]=0;
+                pre[i][4*j+2]=1;
+                pre[i][4*j+1]=0;
+                pre[i][4*j]=1;
+            }
+            else if(hexMatrix[i][j]=='B'){
+                pre[i][4*j+3]=1;
+                pre[i][4*j+2]=1;
+                pre[i][4*j+1]=0;
+                pre[i][4*j]=1;
+            }
+            else if(hexMatrix[i][j]=='C'){
+                pre[i][4*j+3]=0;
+                pre[i][4*j+2]=0;
+                pre[i][4*j+1]=1;
+                pre[i][4*j]=1;
+            }
+            else if(hexMatrix[i][j]=='D'){
+                pre[i][4*j+3]=1;
+                pre[i][4*j+2]=0;
+                pre[i][4*j+1]=1;
+                pre[i][4*j]=1;
+            }
+            else if(hexMatrix[i][j]=='E'){
+                pre[i][4*j+3]=0;
+                pre[i][4*j+2]=1;
+                pre[i][4*j+1]=1;
+                pre[i][4*j]=1;
+            }
+            else{
+                pre[i][4*j+3]=1;
+                pre[i][4*j+2]=1;
+                pre[i][4*j+1]=1;
+                pre[i][4*j]=1;
+            }
+                
+            }
+        }
+}
+
+
+void initializeCharsToBeZeros(){
+    for(int i=0;i<32;i++){
+        for(int j=0;j<8;j++){
+            hexMatrix[i][j]='0';
+        }
+    }
+    for(int i=0;i<8;i++){
+        for(int j=0;j<2;j++){
+            input[i][j]='0';
+        }
+    }
+    
+}
+
+void randomlyGenerateHexInput(){
+    srand(time(NULL));
+    for(int i=0;i<8;i++){
+        for(int j=0;j<2;j++){
+            int randomNumber=rand()%15;
+            if(randomNumber==10){
+                input[i][j]='A';
+            }
+            else if(randomNumber==11){
+                input[i][j]='B';
+            }
+            else if(randomNumber==12){
+                input[i][j]='C';
+            }
+            else if(randomNumber==13){
+                input[i][j]='D';
+            }
+            else if(randomNumber==14){
+                input[i][j]='E';
+            }
+            else if(randomNumber==15){
+                input[i][j]='F';
+            }
+            else{
+                input[i][j]=randomNumber+48;
+            }
+        }
+    }
+    
+    for(int i=12;i<=19;i++){//row 16,17,col 16,17
+        for(int j=3;j<=4;j++){
+            hexMatrix[i][j]=input[i-12][j-3];
+        }
+    }
+    
+}
+
+void printStartingHex(){
+    cout<<"Best Starting Pattern is:>"<<endl;
+    for(int i=0;i<8;i++){
+        for(int j=0;j<2;j++){
+            cout<<input[i][j];
+        }
+        cout<<endl;
+    }
+}
+
+void printStartingBinary(){
+    cout<<"Best Starting Pattern is:>"<<endl;
+    for(int i=12;i<=19;i++){
+        for(int j=12;j<=19;j++){
+            cout<<starting[i][j];
+        }
+        cout<<endl;
+    }
+}
+void copyStarting(){
+    for(int i=0;i<32;i++){
+        for(int j=0;j<32;j++){
+            starting[i][j]=pre[i][j];
+        }
+    }
+}
+
+int main()
+{
+    initializeCharsToBeZeros();
+        
+    int counter=0;
+    int best=-1;
+    while(true){//iterate for 2 hours here
+        initializeCharsToBeZeros();
+        randomlyGenerateHexInput();
+        hexToBinary();
+        copyStarting();
+        if(counter==0){
+            printCompact();
+            printUserFriendly();
+            best=fitness();
+            cout<<"Best for iternation 0 "<<" is "<<best<<endl;
+        }
+        counter++;
+        int temp=bruteForce();
+        if(best<temp){
+            cout<<"New best detected>:"<<endl;
+            best=temp;
+            binaryToHex();
+            printCompact();
+            printUserFriendly();
+            printStartingHex();
+            printStartingBinary();
+        }
+        
+        cout<<"Best for iternation "<<counter<<" is "<<best<<endl;
+        
+    }
+    
+    
+ 
+    return 0;
+}
+
+
+
