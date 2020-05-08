@@ -1,0 +1,73 @@
+#include <iostream>
+
+using namespace std;
+
+
+struct Node{
+    int val;
+    struct Node *next;
+};
+struct Node *head=NULL;
+
+void push(int val){
+ 
+   
+        struct Node *newNode= (struct Node*) malloc(sizeof(struct Node));
+        newNode->val=val;
+        newNode->next=head;
+        head=newNode;
+   
+   
+}
+
+void pop(){
+    if(head!=NULL){
+       
+       head=head->next;
+       
+    }
+    else{
+        cout<<"All of the elements have been poped out, don't pop anymore"<<endl;
+    }
+}
+
+void dumpStack(){
+    if(head==NULL){
+        cout<<"There is nothing left to show in the stack"<<endl;
+    }
+    else{
+        struct Node *temp;
+        temp=head;
+        cout<<"dump stack"<<endl;
+        while(temp!=NULL){
+            cout<<temp->val<<endl;
+            temp=temp->next;
+        }
+    }
+}
+int stack(){
+    push(2);
+    push(1);
+    dumpStack();
+    push(3);
+    push(10);
+    pop();
+    push(15);
+    dumpStack();
+    pop();
+    pop();
+    dumpStack();
+    pop();
+    pop();
+    pop();
+    dumpStack();
+   
+    return 0;
+}
+
+int main()
+{
+    stack();
+   
+    return 0;
+}
