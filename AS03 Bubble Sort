@@ -1,0 +1,103 @@
+#include <iostream>
+
+using namespace std;
+
+struct Node{
+  int val;
+  Node *next;
+};
+
+static Node *arr[10];
+
+int insert(int val){
+    int mod=val%10;
+   
+    if(arr[mod]==NULL){
+       
+        Node *head=(Node*) malloc(sizeof(Node));
+        arr[mod]=head;
+        head->val=val;
+        head->next=NULL;
+    }
+    else{
+        Node *temp=arr[mod];
+        while(temp->next!=NULL){
+            temp=temp->next;
+        }
+       
+    Node *newNode=(struct Node*) malloc(sizeof(struct Node));
+    newNode->val=val;
+    newNode->next=NULL;
+    temp->next=newNode;
+    }
+}
+
+int del(int val){
+    int mod=val%10;
+    Node *temp=arr[mod];
+    if(arr[mod]==NULL){
+        cout<<val<<" Not existed"<<endl;
+    }
+    else{
+        if(arr[mod]->val==val){
+            Node *GC=arr[mod];
+            arr[mod]=(arr[mod])->next;
+            free(GC);
+        }
+        else{
+            Node *GC;
+            while((temp->next)!=NULL&&(temp->next)->val!=val){
+                GC=temp;  
+                temp=temp->next;
+            }
+           
+           
+            if(temp==NULL){
+                cout<<val<<" Not existed"<<endl;
+            }
+            else{
+                temp->next=(temp->next)->next;
+           
+                free(GC);
+            }
+           
+        }
+       
+    }
+   
+   
+    return 0;
+}
+   
+
+
+void dumphash(){
+    int i;
+    for(i=0;i<10;i++){
+        cout<<"Remainder="<<i<<": ";
+        Node *temp=arr[i];
+        while(temp!=NULL){
+            cout<<(temp->val)<<" ";
+            temp=temp->next;
+           
+        }
+        cout<<endl;
+    }
+}    
+   
+int main(){
+    insert(1);
+    insert(5);
+    insert(28);
+    del(5);
+    insert(15);
+    insert(8);
+    dumphash();
+    del(1);
+    insert(18);
+    insert(25);
+    del(33);
+    dumphash();
+   
+    return 0;
+}
