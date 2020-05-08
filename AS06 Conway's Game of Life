@@ -1,0 +1,177 @@
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
+int pre[32][32]={0};
+int cur[32][32]={0};//0=dead, 1=live
+int temp[32][32]={0};
+   
+void start(){
+    int start1,start2;
+    while(true){
+        cout<<"input a point with x and y coordinates as starting pattern, input '-1' to stop"<<endl;
+        cin>>start1;
+        if(start1==-1){
+            break;
+        }
+        cin>>start2;
+        while(start1<=0||start1>=31||start2<=0||start2>=31){
+            cout<<"dead border method!!"<<endl;
+            cin>>start1>>start2;
+        }
+        pre[start1][start2]=1;
+    }
+}
+
+void conways(){
+   
+    for(int i=1;i<30;i++){
+        for(int j=1;j<30;j++){
+            int counter=pre[i-1][j-1]+pre[i-1][j]+pre[i-1][j+1]+
+            pre[i][j-1]+pre[i][j+1]+pre[i+1][j-1]+pre[i+1][j]+pre[i+1][j+1];
+            if(pre[i][j]==0){
+                if(counter==3){
+                    cur[i][j]=1;
+                }
+                else{
+                    cur[i][j]=0;
+                }
+            }
+            else{
+                if(counter==2||counter==3){
+                    cur[i][j]=1;
+                }
+                else{
+                    cur[i][j]=0;
+                }
+            }
+        }
+    }        
+   
+   
+   
+}
+
+void binaryToHex(){
+    for(int k=0;k<1;k++){
+        for(int i=0;i<31;i++){
+            for(int j=0;j<31;j++){
+                if(j%4==0){
+                    int hex=pre[i][j]*2*2*2;
+                    hex+=pre[i][j+1]*2*2;
+                    hex+=pre[i][j+2]*2;
+                    hex+=pre[i][j+3]*1;
+                    if(hex==10){
+                        cout<<'A';
+                    }
+                    else if(hex==11){
+                        cout<<'B';
+                    }
+                    else if(hex==12){
+                        cout<<'C';
+                    }
+                    else if(hex==13){
+                        cout<<'D';
+                    }
+                    else if(hex==14){
+                        cout<<'E';
+                    }
+                    else if(hex==15){
+                        cout<<'F';
+                    }
+                    else{
+                        cout<<hex;
+                    }
+                }
+            }
+            cout<<endl;
+        }
+        cout<<endl;
+    }
+   
+    for(int k=0;k<1;k++){
+        for(int i=0;i<31;i++){
+            for(int j=0;j<31;j++){
+                if(j%4==0){
+                    int hex=cur[i][j]*2*2*2;
+                    hex+=cur[i][j+1]*2*2;
+                    hex+=cur[i][j+2]*2;
+                    hex+=cur[i][j+3]*1;
+                    if(hex==10){
+                        cout<<'A';
+                    }
+                    else if(hex==11){
+                        cout<<'B';
+                    }
+                    else if(hex==12){
+                        cout<<'C';
+                    }
+                    else if(hex==13){
+                        cout<<'D';
+                    }
+                    else if(hex==14){
+                        cout<<'E';
+                    }
+                    else if(hex==15){
+                        cout<<'F';
+                    }
+                    else{
+                        cout<<hex;
+                    }
+                }
+            }
+            cout<<endl;
+        }
+        cout<<endl;
+    }
+   
+}
+
+int main()
+{
+   
+    start();
+    for(int k=0;k<2;k++){
+        conways();
+        cout<<"Compact"<<endl;
+        binaryToHex();
+        cout<<"User-friendly:"<<endl;
+        for(int i=0;i<31;i++){
+            for(int j=0;j<31;j++){
+                if(pre[i][j]==0){
+                    cout<<'*';
+                }
+                else{
+                    cout<<'.';
+                }
+            }
+            cout<<endl;
+        }
+        cout<<endl;
+        for(int i=0;i<31;i++){
+            for(int j=0;j<31;j++){
+                if(cur[i][j]==0){
+                    cout<<'*';
+                }
+                else{
+                    cout<<'.';
+                }
+            }
+            cout<<endl;
+        }
+        for(int i=0;i<31;i++){
+            for(int j=0;j<31;j++){
+                temp[i][j]=pre[i][j];
+                pre[i][j]=cur[i][j];
+                cur[i][j]=temp[i][j];
+            }
+            cout<<endl;
+        }
+       
+       
+    }
+ 
+    return 0;
+}
+
+
