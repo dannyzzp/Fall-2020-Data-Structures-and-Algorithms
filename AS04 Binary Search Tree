@@ -1,0 +1,240 @@
+#include <iostream>
+
+using namespace std;
+
+struct Node{
+  Node *leftC;
+  Node *rightC;
+  int value;
+};
+
+Node *root=NULL;//when do I need to put the star(struct,malloc)
+
+Node *find(int val){
+    Node *temp;
+    if(root==NULL){
+        cout<<"The BST is empty"<<endl;
+    }
+    else{
+        temp=root;
+        while(temp!=NULL&&temp->value!=val){ //Null exception might be happening here
+            if(val>(temp->value)){
+                if(temp->rightC!=NULL){
+                    temp=temp->rightC;
+                }
+                else{
+                    cout<<"Can't find"<<" "<<val<<endl;
+                    temp=NULL;
+                }
+            }
+            else{
+                if(temp->leftC!=NULL){
+                    temp=temp->leftC;
+                }
+                else{
+                    cout<<"Can't find"<<" "<<val<<endl;
+                    break;
+                    free(temp);
+
+                }
+            }
+           
+        }
+            if(temp==NULL){
+                return temp;
+            }
+            else{
+                return temp;//return temp or *temp?
+            }
+       
+    }
+    free(temp);
+
+}
+
+void insert(int val){
+    Node *temp=(Node*)malloc(sizeof(Node));
+    if(root==NULL){
+       Node *newNode=(Node*)malloc(sizeof(Node));
+                newNode->value=val;
+                newNode->rightC=NULL;
+                newNode->leftC=NULL;
+                root=newNode;
+    }
+    else{
+        temp=root;
+        while(temp->value!=val){
+            if(temp->leftC!=NULL&&temp->value>val){
+                temp=temp->leftC;
+            }
+            else if(temp->leftC==NULL&&temp->value>val){
+                Node *newNode=(Node*)malloc(sizeof(Node));
+                newNode->value=val;
+                newNode->rightC=NULL;
+                newNode->leftC=NULL;
+                temp->leftC=newNode;
+                temp=temp->leftC;
+            }
+            else if(temp->rightC!=NULL&&temp->value<val){
+                temp=temp->rightC;
+            }
+            else if(temp->rightC==NULL&&temp->value<val){
+                Node *newNode=(Node*)malloc(sizeof(Node));
+                newNode->value=val;
+                newNode->rightC=NULL;
+                newNode->leftC=NULL;
+                temp->rightC=newNode;
+                temp=temp->rightC;
+            }
+        }
+    }
+   
+   
+}
+
+void dumptree(Node *temp){
+    if(temp->leftC!=NULL){
+        dumptree(temp->leftC);
+    }
+    if(temp->rightC!=NULL){
+        dumptree(temp->rightC);
+    }
+    cout<<temp->value<<endl;
+
+}
+void dumptree(){
+    cout<<"Dumptree:"<<endl;
+    if(root==NULL){
+        cout<<"The BST is empty"<<endl;
+    }
+    else{
+        dumptree(root);
+    }
+}
+
+int findMin(Node *temp){
+    temp=temp->rightC;
+    int min=temp->value;
+    if(temp->leftC==NULL){
+        min=temp->value;
+    }
+   
+    while(temp->leftC!=NULL){
+        min=(temp->leftC)->value;
+        temp=temp->leftC;
+    }
+    return min;
+}
+
+int findPrev(int val){
+    Node *temp=root;
+    Node *prev=root;
+    while(temp->value!=val&&temp!=NULL){
+        if(temp->value<val&&temp->rightC!=NULL){
+            prev=temp;
+            temp=temp->rightC;
+        }
+        else if(temp->value>val&&temp->leftC!=NULL){
+            prev=temp;
+            temp=temp->leftC;
+        }
+    }
+    return prev->value;
+   
+}
+
+void del(int val){
+    Node *temp=find(val);
+    if(temp==NULL){
+    }
+    else{
+     if(temp->leftC!=NULL&&temp->rightC!=NULL){
+        if(temp==root){
+            Node *minNode=find(findMin(temp));
+            Node *prevNode=find(findPrev(minNode->value));
+            if(prevNode->value>minNode->value){
+                prevNode->leftC=minNode->rightC;
+            }
+            else if(prevNode->value<minNode->value){
+                prevNode->rightC=minNode->rightC;
+            }
+            root->value=minNode->value;
+        }
+        else{
+            Node *minNode=find(findMin(temp));
+            Node *prevNode=find(findPrev(minNode->value));
+            temp->value=minNode->value;
+            prevNode->rightC=minNode->rightC;
+           
+        }
+     }
+     else if(temp->leftC!=NULL&&temp->rightC==NULL){
+            if(temp==root){
+                root=root->leftC;
+            }
+            else{
+                int prev=findPrev(temp->value);
+                Node *prevNode=find(prev);
+           
+                if(temp==prevNode->leftC){
+                    prevNode->leftC=temp->leftC;
+                }
+                else if(temp==prevNode->rightC){
+                    prevNode->rightC=temp->leftC;
+                }
+            }
+     }
+     else if(temp->leftC==NULL&&temp->rightC!=NULL){
+            if(temp==root){
+                root=root->rightC;
+            }
+            else{
+                int prev=findPrev(temp->value);
+                Node *prevNode=find(prev);
+           
+                if(temp==prevNode->leftC){
+                    prevNode->leftC=temp->rightC;
+                }
+                else if(temp==prevNode->rightC){
+                    prevNode->rightC=temp->rightC;
+                }
+            }
+     }
+     else if(temp->leftC==NULL&&temp->rightC==NULL){
+            Node *prevNode=find(findPrev(temp->value));
+            if(temp->value>prevNode->value){
+                prevNode->rightC=NULL;
+            }
+            else if(temp->value<prevNode->value){
+                prevNode->leftC=NULL;
+            }
+     }
+    }
+   
+}
+
+
+int main()
+{
+    cout<<"Dumptree shows all the values from left subtree to the right one but the root.\nRoot shows in the end."<<endl;
+    insert(20);
+    insert(10);
+    insert(30);
+    insert(5);
+    insert(7);
+    insert(21);
+    dumptree();
+    del(20);
+    dumptree();
+    del(21);
+    dumptree();
+    del(35);
+   
+    return 0;
+}
+
+         
+
+
+                                     
+
