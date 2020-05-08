@@ -1,0 +1,64 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int main(int argc, const char * argv[]) {
+
+    
+
+    int counterForCircle=0;
+
+    int counterForRest=0;
+
+    int numberOfPoints=0;
+
+    srand(time(NULL));
+
+    for(int i=1;i<=10000;i++){
+
+        //generate a random number for x;
+
+        //generate a random number for y;
+
+        double x = ((double) rand() / (RAND_MAX));
+
+        double y = ((double) rand() / (RAND_MAX));
+
+        if(x*x+y*y<=1){
+
+            counterForCircle++;
+
+            numberOfPoints++;
+
+        }
+
+        else{
+
+            counterForRest++;
+
+            numberOfPoints++;
+
+        }
+
+        if(i%100==0){
+
+            cout<<"Number of Points Within the Circle:>"<<counterForCircle<<endl<<endl;
+
+            cout<<"Total Number of Points:>"<<numberOfPoints<<endl<<endl;
+
+            double area=counterForCircle/(((double)counterForRest)+counterForCircle);
+
+                      cout<<"Current Area Estimate:<"<<area<<endl<<endl;
+
+        }
+
+    }
+
+    
+
+    return 0;
+
+}
+
+
