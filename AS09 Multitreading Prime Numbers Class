@@ -1,0 +1,46 @@
+public class MyThread extends Thread{
+    private int lower;
+    private int upper;
+    private int counter=0;
+    
+    MyThread(int l,int u){
+        lower=l;
+        upper=u;
+
+        inc();
+
+    }
+
+    public synchronized void inc(){
+        for(int i=lower;i<upper;i++){
+           // System.out.println(i);
+            if(isPrime(i)==true){
+                counter++;
+            }
+        }
+    }
+    
+    public boolean isPrime(int n){
+        int counter=0;
+        for(int i=1;i<=n;i++){
+            for(int j=i;j<=n;j++){
+                if(i*j==n){
+                    counter++;
+                }
+            }
+        }
+        
+        if(counter>1){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+    
+    public int showAndReturnNumberOfPrimeNumbers(){
+        System.out.println("The number of prime numbers is =>"+counter);
+        return counter;
+    } 
+
+}
