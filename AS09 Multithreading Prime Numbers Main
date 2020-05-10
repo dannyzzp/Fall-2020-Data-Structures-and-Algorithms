@@ -1,0 +1,23 @@
+public class parallelism{
+   
+      
+   public static void main(String[] args){
+       final int firstBound=(2000-1000)/4+1000;
+       final int secondBound=(2000-1000)/4+firstBound;
+       final int thirdBound=(2000-1000)/4+secondBound;
+       
+       Thread myThread1=new Thread(1000,firstBound);
+       int counter1=myThread1.showAndReturnNumberOfPrimeNumbers();
+       Thread myThread2=new Thread(firstBound,secondBound);
+       int counter2=myThread2.showAndReturnNumberOfPrimeNumbers();
+
+       Thread myThread3=new Thread(secondBound,thirdBound);
+       int counter3=myThread3.showAndReturnNumberOfPrimeNumbers();
+       Thread myThread4=new Thread(thirdBound,2000);
+       int counter4=myThread4.showAndReturnNumberOfPrimeNumbers();
+       
+       System.out.println(counter1+counter2+counter3+counter4);
+       
+       
+   }
+}
