@@ -1,0 +1,10 @@
+class Counter{
+  public int counter;
+  Counter(){
+    counter=0;  
+  }
+  public synchronized void inc(){
+    counter++;
+  }
+
+}
