@@ -1,23 +1,38 @@
-public class parallelism{
-   
-      
+public class Multithread{
    public static void main(String[] args){
-       final int firstBound=(2000-1000)/4+1000;
-       final int secondBound=(2000-1000)/4+firstBound;
-       final int thirdBound=(2000-1000)/4+secondBound;
+       final int firstBound=(2000000-1000000)/4+1000000;
+       final int secondBound=(2000000-1000000)/4+firstBound;
+       final int thirdBound=(2000000-1000000)/4+secondBound;
        
-       Thread myThread1=new Thread(1000,firstBound);
-       int counter1=myThread1.showAndReturnNumberOfPrimeNumbers();
-       Thread myThread2=new Thread(firstBound,secondBound);
-       int counter2=myThread2.showAndReturnNumberOfPrimeNumbers();
-
-       Thread myThread3=new Thread(secondBound,thirdBound);
-       int counter3=myThread3.showAndReturnNumberOfPrimeNumbers();
-       Thread myThread4=new Thread(thirdBound,2000);
-       int counter4=myThread4.showAndReturnNumberOfPrimeNumbers();
+       Counter counter=new Counter();
        
-       System.out.println(counter1+counter2+counter3+counter4);
+       MultithreadingDemo t1=new MultithreadingDemo(1000000,firstBound,counter);
+       MultithreadingDemo t2=new MultithreadingDemo(firstBound,secondBound,counter);
+       MultithreadingDemo t3=new MultithreadingDemo(secondBound,thirdBound,counter);
+       MultithreadingDemo t4=new MultithreadingDemo(thirdBound,2000000,counter);
+     
+       
+       t1.start();
+       t2.start();
+       t3.start();
+       t4.start();
        
        
+       try
+        { 
+            t1.join();
+            t2.join();
+            t3.join();
+            t4.join(); 
+        } 
+        catch(Exception e) 
+        { 
+            System.out.println("Interrupted"); 
+        }
+        
+        
+                
+       System.out.println(counter.counter);
    }
+
 }
